@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to Excel Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .upload-area {
+            border: 3px dashed #ddd;
+            border-radius: 15px;
+            padding: 40px 20px;
+            margin: 30px 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(248, 250, 252, 0.8);
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .upload-area.dragover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 4em;
+            color: #ddd;
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .upload-area:hover .upload-icon {
+            color: #667eea;
+        }
+
+        .upload-text {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .upload-subtext {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .preview-section {
+            margin: 30px 0;
+            display: none;
+        }
+
+        .preview-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-info {
+            margin-top: 15px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .progress-section {
+            margin: 20px 0;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status-text {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .error {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .success {
+            background: linear-gradient(135deg, #51cf66, #40c057);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        canvas {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Image to Excel</h1>
+        <p class="subtitle">Transform your images into colorful Excel spreadsheets</p>
+        
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">Click to upload or drag & drop</div>
+            <div class="upload-subtext">JPEG or PNG • Max 1920×1080</div>
+        </div>
+        
+        <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png">
+        
+        <div class="preview-section" id="previewSection">
+            <div class="preview-container">
+                <img id="imagePreview" alt="Preview">
+                <div class="image-info" id="imageInfo"></div>
+            </div>
+        </div>
+        
+        <div class="progress-section" id="progressSection">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="status-text" id="statusText">Processing...</div>
+        </div>
+        
+        <div class="error" id="errorMessage"></div>
+        <div class="success" id="successMessage"></div>
+        
+        <button class="btn" id="convertBtn" disabled>Convert to Excel</button>
+        
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.querySelector('.upload-area');
+        const previewSection = document.getElementById('previewSection');
+        const imagePreview = document.getElementById('imagePreview');
+        const imageInfo = document.getElementById('imageInfo');
+        const convertBtn = document.getElementById('convertBtn');
+        const progressSection = document.getElementById('progressSection');
+        const progressFill = document.getElementById('progressFill');
+        const statusText = document.getElementById('statusText');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let currentImage = null;
+        let currentFilename = null;
+
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        function getExcelFilename(originalFilename) {
+            if (!originalFilename) return 'image.xlsx';
+            
+            // Remove the extension and add .xlsx
+            const nameWithoutExt = originalFilename.replace(/\.[^/.]+$/, '');
+            return nameWithoutExt + '.xlsx';
+        }
+
+        function handleFile(file) {
+            // Validate file type
+            if (!file.type.match(/^image\/(jpeg|jpg|png)$/)) {
+                showError('Please select a JPEG or PNG image file.');
+                return;
+            }
+
+            // Validate file size (max 10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                showError('File size too large. Please select a smaller image.');
+                return;
+            }
+
+            // Store the filename for later use
+            currentFilename = file.name;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    // Validate dimensions
+                    if (img.width > 1920 || img.height > 1080) {
+                        showError(`Image dimensions (${img.width}×${img.height}) exceed maximum allowed size (1920×1080).`);
+                        return;
+                    }
+
+                    currentImage = img;
+                    imagePreview.src = e.target.result;
+                    imageInfo.textContent = `File: ${file.name} • Dimensions: ${img.width} × ${img.height} pixels`;
+                    previewSection.style.display = 'block';
+                    convertBtn.disabled = false;
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function rgbToHex(r, g, b) {
+            return ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0').toUpperCase();
+        }
+
+        function updateProgress(percent, status) {
+            progressFill.style.width = percent + '%';
+            statusText.textContent = status;
+        }
+
+        convertBtn.addEventListener('click', async () => {
+            if (!currentImage) return;
+
+            convertBtn.disabled = true;
+            progressSection.style.display = 'block';
+            updateProgress(0, 'Preparing image data...');
+
+            try {
+                // Set canvas dimensions to match image
+                canvas.width = currentImage.width;
+                canvas.height = currentImage.height;
+
+                // Draw image to canvas
+                ctx.drawImage(currentImage, 0, 0);
+                updateProgress(10, 'Reading pixel data...');
+
+                // Get image data
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const pixels = imageData.data;
+
+                updateProgress(20, 'Creating Excel workbook...');
+
+                // Create new workbook
+                const workbook = XLSX.utils.book_new();
+                const wsData = [];
+
+                // Process pixels and create worksheet data
+                for (let y = 0; y < canvas.height; y++) {
+                    const row = [];
+
+                    for (let x = 0; x < canvas.width; x++) {
+                        let cell = {t: 's', v: ''}
+                    }
+                }
+
+                const totalPixels = canvas.width * canvas.height;
+                let processedPixels = 0;
+
+                for (let y = 0; y < canvas.height; y++) {
+                    const row = [];
+                    for (let x = 0; x < canvas.width; x++) {
+                        const index = (y * canvas.width + x) * 4;
+                        const r = pixels[index];
+                        const g = pixels[index + 1];
+                        const b = pixels[index + 2];
+                        const a = pixels[index + 3];
+
+                        // Skip transparent pixels or use white background
+                        if (a < 128) {
+                            row.push('');
+                        } else {
+                            row.push('');
+                        }
+                        processedPixels++;
+                    }
+                    wsData.push(row);
+
+                    // Update progress periodically
+                    if (y % Math.max(1, Math.floor(canvas.height / 50)) === 0) {
+                        const progress = 20 + (processedPixels / totalPixels) * 60;
+                        updateProgress(progress, `Processing pixels... ${Math.floor(progress - 20)}%`);
+                        
+                        // Allow UI to update
+                        await new Promise(resolve => setTimeout(resolve, 1));
+                    }
+                }
+
+                updateProgress(80, 'Creating worksheet...');
+
+                // Create worksheet
+                const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+                // Set cell styles with colors
+                updateProgress(85, 'Applying colors...');
+                
+                for (let y = 0; y < canvas.height; y++) {
+                    for (let x = 0; x < canvas.width; x++) {
+                        const index = (y * canvas.width + x) * 4;
+                        const r = pixels[index];
+                        const g = pixels[index + 1];
+                        const b = pixels[index + 2];
+                        const a = pixels[index + 3];
+
+                        if (a >= 128) {
+                            const cellAddress = XLSX.utils.encode_cell({r: y, c: x});
+                            if (!ws[cellAddress]) ws[cellAddress] = {t: 's', v: '', s: { }};
+                            
+                            // Set cell background color
+                            if (!ws[cellAddress].s) ws[cellAddress].s = {};
+                            ws[cellAddress].s.fill = {
+                                bgColor: { rgb: rgbToHex(r, g, b) }
+                            };
+                        }
+                    }
+                    
+                    // Update progress
+                    if (y % Math.max(1, Math.floor(canvas.height / 10)) === 0) {
+                        const progress = 85 + (y / canvas.height) * 10;
+                        updateProgress(progress, 'Applying colors...');
+                        await new Promise(resolve => setTimeout(resolve, 1));
+                    }
+                }
+
+                updateProgress(95, 'Finalizing Excel file...');
+
+                // Set column widths to make cells more square
+                const cols = [];
+                for (let i = 0; i < canvas.width; i++) {
+                    cols.push({wch: 2});
+                }
+                ws['!cols'] = cols;
+
+                // Add worksheet to workbook
+                XLSX.utils.book_append_sheet(workbook, ws, 'Image');
+
+                updateProgress(98, 'Generating download...');
+
+                // Generate Excel file
+                const wbout = XLSX.write(workbook, {
+                    bookType: 'xlsx',
+                    type: 'array',
+                    cellStyles: true
+                });
+
+                // Create download
+                const blob = new Blob([wbout], {type: 'application/octet-stream'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = getExcelFilename(currentFilename);
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                updateProgress(100, 'Complete!');
+                showSuccess(`Excel file created successfully! (${canvas.width}×${canvas.height} cells)`);
+
+            } catch (error) {
+                console.error('Conversion error:', error);
+                showError('An error occurred during conversion. Please try again.');
+            } finally {
+                convertBtn.disabled = false;
+                setTimeout(() => {
+                    progressSection.style.display = 'none';
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

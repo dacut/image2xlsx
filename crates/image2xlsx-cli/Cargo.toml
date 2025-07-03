@@ -1,0 +1,14 @@
+[package]
+name = "image2xlsx-cli"
+description = "Command-line interface for image2xlsx"
+authors.workspace = true
+edition.workspace = true
+version.workspace = true
+
+homepage.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+clap = { version = "4.5.40", features = ["color", "derive", "help"] }
+image2xlsx = { path = "../image2xlsx" }

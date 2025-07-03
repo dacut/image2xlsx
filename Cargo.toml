@@ -1,12 +1,12 @@
-[package]
-name = ""
-description = ""
+[workspace]
+members = ["crates/*"]
+resolver = "2"
+
+[workspace.package]
 edition = "2024"
 version = "0.1.0"
 
 authors = ["David Cuthbert <dacut@kanga.org>"]
-homepage = "https://github.com/dacut/"
+homepage = "https://github.com/dacut/image2xlsx"
 license = "Apache-2.0"
-repository = "https://github.com/dacut/.git"
-
-[dependencies]
+repository = "https://github.com/dacut/image2xlsx.git"

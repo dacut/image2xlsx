@@ -1,0 +1,15 @@
+[package]
+name = "image2xlsx"
+description = "Core library for converting images to Excel workbook format"
+authors.workspace = true
+edition.workspace = true
+version.workspace = true
+
+homepage.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+anyhow = "1.0.98"
+image = "0.25.6"
+rust_xlsxwriter = "0.89.0"

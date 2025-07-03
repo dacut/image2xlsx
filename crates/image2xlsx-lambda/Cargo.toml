@@ -1,0 +1,14 @@
+[package]
+name = "image2xlsx-lambda"
+description = "AWS Lambda function for image2xlsx"
+authors.workspace = true
+edition.workspace = true
+version.workspace = true
+
+homepage.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+aws-sdk-s3 = "1.96.0"
+lambda_runtime = "0.14.2"
