@@ -15,7 +15,7 @@ pub fn convert_image_to_excel(image_data: Uint8ClampedArray, width: u32, height:
 
     worksheet.set_default_row_height_pixels(5);
     for x in 0..width {
-        worksheet.set_column_width_pixels(x as u16, 10).unwrap();
+        worksheet.set_column_width_pixels(x as u16, 5).unwrap();
     }
 
     // Convert Uint8ClampedArray to Vec<u8>
