@@ -105,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function handleFile(file: File): void {
     // Validate file type
-    if (!file.type.match(/^image\/(jpeg|jpg|png)$/)) {
-      showError('Please select a JPEG or PNG image file.');
+    if (!file.type.match(/^image\/.*$/)) {
+      showError('Please select an image file. (' + file.type + ' not supported)');
       return;
     }
 
