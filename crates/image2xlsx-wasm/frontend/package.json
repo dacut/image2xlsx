@@ -1,0 +1,40 @@
+{
+  "name": "image2xlsx",
+  "version": "0.1.0",
+  "description": "Convert images to Excel spreadsheets using WebAssembly and Rust",
+  "main": "src/index.ts",
+  "bin": {
+    "create-wasm-app": ".bin/create-wasm-app.js"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dacut/image2xlsx.git"
+  },
+  "keywords": [
+    "webassembly",
+    "wasm",
+    "rust",
+    "vite"
+  ],
+  "author": "David Cuthbert <dacut@kanga.org>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dacut/image2xlsx/issues"
+  },
+  "homepage": "https://github.com/dacut/image2xlsx",
+  "dependencies": {
+    "image2xlsx-wasm": "file:../pkg"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.10",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vite-plugin-top-level-await": "^1.5.0",
+    "vite-plugin-wasm": "^3.4.1"
+  }
+}

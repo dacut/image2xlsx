@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image to Excel Converter</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <noscript>This page requires WebAssembly and JavaScript support.</noscript>
+    <div class="container">
+      <h1>🎨 Image to Excel</h1>
+      <p class="subtitle">
+        Transform your images into colorful Excel spreadsheets
+      </p>
+
+      <div
+        class="upload-area"
+        onclick="document.getElementById('fileInput').click()"
+      >
+        <div class="upload-icon">📁</div>
+        <div class="upload-text">Click to upload or drag & drop</div>
+        <div class="upload-subtext">JPEG or PNG • Max 1920×1080</div>
+      </div>
+
+      <input
+        type="file"
+        id="fileInput"
+        accept="image/jpeg,image/jpg,image/png"
+      />
+
+      <div class="preview-section" id="previewSection">
+        <div class="preview-container">
+          <img id="imagePreview" alt="Preview" />
+          <div class="image-info" id="imageInfo"></div>
+        </div>
+      </div>
+
+      <div class="progress-section" id="progressSection">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="status-text" id="statusText">Processing...</div>
+      </div>
+
+      <div class="error" id="errorMessage"></div>
+      <div class="success" id="successMessage"></div>
+
+      <button class="btn" id="convertBtn" disabled>Convert to Excel</button>
+
+      <canvas id="canvas"></canvas>
+    </div>
+    <script type="module" src="./src/index.ts"></script>
+  </body>
+</html>
