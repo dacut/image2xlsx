@@ -56,6 +56,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Paste handler for images
+  document.addEventListener('paste', (e: ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      
+      // Check if the item is an image
+      if (item.type.indexOf('image') === 0) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) {
+          handleFile(file);
+          showSuccess('Image pasted successfully!');
+        }
+        break;
+      }
+    }
+  });
+
   function showError(message: string): void {
     errorMessage.textContent = message;
     errorMessage.style.display = 'block';

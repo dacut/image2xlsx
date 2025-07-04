@@ -19,8 +19,9 @@
         onclick="document.getElementById('fileInput').click()"
       >
         <div class="upload-icon">📁</div>
-        <div class="upload-text">Click to upload or drag & drop</div>
-        <div class="upload-subtext">JPEG or PNG • Max 1920×1080</div>
+        <div class="upload-text">Click to browse files, drag & drop, or paste</div>
+        <div class="upload-subtext">JPEG or PNG • Ctrl/Cmd+V to paste</div>
+        <div class="upload-subtext">All files are processed on your browser and not sent to any server</div>
       </div>
 
       <input
@@ -47,6 +48,8 @@
       <div class="success" id="successMessage"></div>
 
       <button class="btn" id="convertBtn" disabled>Convert to Excel</button>
+      <div class="subtle">Made with madness on Bainbridge Island, Washington</div>
+      <div class="subtle"><a href="https://github.com/dacut/image2xlsx" target="_blank">Open Source • Apache 2.0 Licensed</a></div>
 
       <canvas id="canvas"></canvas>
     </div>

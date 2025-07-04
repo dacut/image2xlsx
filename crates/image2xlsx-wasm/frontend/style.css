@@ -82,6 +82,11 @@ h1 {
   font-size: 0.9em;
 }
 
+.subtle {
+  color: #666;
+  font-size: 0.7em;
+}
+
 #fileInput {
   display: none;
 }
